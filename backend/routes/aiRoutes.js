@@ -5,20 +5,8 @@ const path = require('path');
 const { processVoiceCommand } = require('../controllers/aiAssistantController');
 const { protect } = require('../middleware/authMiddleware');
 
-// Configure Multer for audio uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, '../uploads');
-        if (!require('fs').existsSync(uploadDir)) {
-            require('fs').mkdirSync(uploadDir);
-        }
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        cb(null, `voice-${Date.now()}.webm`);
-    }
-});
-
+// Configure Multer for audio uploads (Memory storage for serverless compatibility)
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // POST /api/ai/voice-assistant

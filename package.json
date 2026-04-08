@@ -1,0 +1,20 @@
+{
+    "name": "kriva-smart-market-monorepo",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+        "build": "npm run build --prefix frontend",
+        "install-all": "npm install && npm install --prefix frontend && npm install --prefix backend"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "dependencies": {
+        "mysql2": "^3.20.0"
+    }
+}

@@ -25,7 +25,7 @@ const HeatmapPage = () => {
                     const aiResults = {};
                     await Promise.all(uniqueCrops.map(async (crop) => {
                         try {
-                            const aiRes = await axios.get('/api/market/predict', { params: { commodity: crop } });
+                            const aiRes = await axios.get('/ai/predict-market', { params: { commodity: crop } });
                             aiResults[crop] = aiRes.data;
                         } catch (e) { aiResults[crop] = { growth_percent: 0 }; }
                     }));

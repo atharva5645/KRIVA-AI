@@ -1,0 +1,35 @@
+{
+    "version": 2,
+    "name": "kriva-smart-market",
+    "builds": [
+        {
+            "src": "frontend/package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "dist"
+            }
+        },
+        {
+            "src": "api/index.js",
+            "use": "@vercel/node"
+        },
+        {
+            "src": "api/ai.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "api/index.js"
+        },
+        {
+            "source": "/ai/(.*)",
+            "destination": "api/ai.py"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "frontend/index.html"
+        }
+    ]
+}

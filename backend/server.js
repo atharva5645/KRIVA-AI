@@ -36,9 +36,15 @@ app.get('/api/health', (req, res) => {
 // Error Handling
 app.use(errorHandler);
 
+// Initialize Socket.io (Note: socket.io may have limited support in serverless environments)
 initSocket(server);
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+
+if (require.main === module) {
+    server.listen(PORT, () => {
+        console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    });
+}
+
+module.exports = app;

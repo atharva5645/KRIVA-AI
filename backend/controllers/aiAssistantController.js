@@ -1,18 +1,15 @@
 const Groq = require("groq-sdk");
 const fs = require("fs");
 const path = require("path");
+const { Readable } = require("stream");
 
 exports.processVoiceCommand = async (req, res, next) => {
-    let audioPath = null;
     try {
         console.log("--- Voice Assistant Request Start ---");
         if (!req.file) {
             console.error("No audio file in request");
             return res.status(400).json({ success: false, error: "No audio file provided" });
         }
-
-        audioPath = req.file.path;
-        console.log("Audio file received at:", audioPath);
 
         const apiKey = process.env.GROQ_API_KEY || process.env.VOICE_ASSISTANT_GROQ_KEY;
         if (!apiKey) {
@@ -24,10 +21,15 @@ exports.processVoiceCommand = async (req, res, next) => {
 
         const groq = new Groq({ apiKey });
 
-        // 1. STT: Whisper Large V3
+        // 1. STT: Whisper Large V3 (using Buffer/Stream for serverless)
         console.log("Starting STT with whisper-large-v3...");
+
+        // Create a file-like object from the buffer
+        const audioFile = req.file.buffer;
+        audioFile.name = 'voice.webm'; // Required by some SDKs
+
         const transcription = await groq.audio.transcriptions.create({
-            file: fs.createReadStream(audioPath),
+            file: audioFile,
             model: "whisper-large-v3",
             response_format: "json"
         });
@@ -97,14 +99,5 @@ exports.processVoiceCommand = async (req, res, next) => {
             success: false,
             error: errorMessage
         });
-    } finally {
-        if (audioPath) {
-            try {
-                fs.unlinkSync(audioPath);
-                console.log("Audio file cleaned up");
-            } catch (unlinkErr) {
-                console.error("Failed to cleanup audio file:", unlinkErr.message);
-            }
-        }
     }
 };
