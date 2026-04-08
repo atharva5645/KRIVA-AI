@@ -38,10 +38,16 @@ const LoginPage = () => {
 
     const handleAuth = async (data) => {
         try {
-            const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
+            let endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
+            if (data.isSocial) endpoint = '/api/auth/social-login';
+
             const payload = { ...data };
 
-            if (mode === 'login') {
+            if (data.isSocial) {
+                // For social login, we just pass email and name
+                payload.email = normalizeEmail(data.email);
+                payload.name = data.name;
+            } else if (mode === 'login') {
                 if (data.loginMethod === 'email') {
                     payload.email = normalizeEmail(data.email);
                     delete payload.mobile;

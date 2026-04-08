@@ -155,3 +155,55 @@ exports.login = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.socialLogin = async (req, res, next) => {
+    try {
+        await ensurePhoneColumn();
+        const { email, name, role } = req.body;
+        const normalizedEmail = String(email || '').trim().toLowerCase();
+        const assignedRole = normalizeRole(role || 'consumer');
+
+        if (!normalizedEmail) {
+            return res.status(400).json({ success: false, error: 'Email is required for social login' });
+        }
+
+        let [users] = await db.query('SELECT * FROM users WHERE LOWER(email) = ?', [normalizedEmail]);
+        let user = users[0];
+
+        if (!user) {
+            const salt = await bcrypt.genSalt(10);
+            const randomPass = Math.random().toString(36).slice(-8);
+            const hashedPassword = await bcrypt.hash(randomPass, salt);
+            const tempPhone = `social_${Date.now().toString().slice(-8)}`;
+
+            const [result] = await db.query(
+                'INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)',
+                [name || normalizedEmail.split('@')[0], normalizedEmail, tempPhone, hashedPassword, assignedRole]
+            );
+
+            const [newUsers] = await db.query('SELECT * FROM users WHERE user_id = ?', [result.insertId]);
+            user = newUsers[0];
+        }
+
+        const token = jwt.sign(
+            { id: user.user_id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: TOKEN_EXPIRY }
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user.user_id,
+                name: user.name,
+                email: user.email || '',
+                phone: user.phone || '',
+                role: user.role
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+

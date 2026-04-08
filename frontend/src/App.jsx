@@ -10,6 +10,7 @@ import CooperativeDashboard from './pages/CooperativeDashboard';
 import NegotiationPage from './pages/NegotiationPage';
 import OrdersPage from './pages/OrdersPage';
 import ProfilePage from './pages/ProfilePage';
+import ReviewsPage from './pages/ReviewsPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
@@ -211,6 +212,7 @@ function App() {
                                     }
                                 />
                                 <Route path="/heatmap" element={<HeatmapPage />} />
+                                <Route path="/reviews" element={<ReviewsPage />} />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route
                                     path="/profile"

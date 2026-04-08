@@ -160,9 +160,20 @@ export const ModernSignIn = ({ mode = 'login', onToggleMode, onSubmit, initialRo
             ...payload
         });
     };
-    
+
     const handleSocialAuth = (provider) => {
-        alert(`${provider} authentication is not configured yet. Please use email/password login.`);
+        if (provider === 'Google') {
+            // Mocking a successful Google Sign-In for demo purposes
+            // In a real app, this would be the result of a Google GIS popup
+            onSubmit({
+                isSocial: true,
+                email: `google_user_${Math.floor(Math.random() * 1000)}@gmail.com`,
+                name: 'Google User',
+                role
+            });
+        } else {
+            alert(`${provider} authentication is not configured yet. Please use email/password login.`);
+        }
     };
 
     useEffect(() => {
@@ -359,20 +370,13 @@ export const ModernSignIn = ({ mode = 'login', onToggleMode, onSubmit, initialRo
                         <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-4 text-zinc-400 font-medium">Or continue with</span></div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <button
                             type="button"
                             onClick={() => handleSocialAuth('Google')}
                             className="flex items-center justify-center gap-2 h-11 border border-zinc-200 rounded-xl text-sm font-medium hover:bg-zinc-50 transition border-dashed"
                         >
                             <Chrome size={18} className="text-zinc-600" /> Google
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleSocialAuth('Github')}
-                            className="flex items-center justify-center gap-2 h-11 border border-zinc-200 rounded-xl text-sm font-medium hover:bg-zinc-50 transition border-dashed"
-                        >
-                            <Github size={18} className="text-zinc-600" /> Github
                         </button>
                     </div>
 
