@@ -4,23 +4,15 @@
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "api/index.js"
+            "destination": "/api/index.js"
         },
         {
             "source": "/ai/(.*)",
-            "destination": "api/ai.py"
+            "destination": "/api/ai.py"
         },
         {
-            "source": "/assets/(.*)",
-            "destination": "frontend/dist/assets/$1"
-        },
-        {
-            "source": "/favicon.ico",
-            "destination": "frontend/dist/favicon.ico"
-        },
-        {
-            "source": "/((?!api|ai|assets).*)",
-            "destination": "frontend/dist/index.html"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
