@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
     if (err.code === 'ECONNREFUSED') {
         message = 'Database server is not running. Please start MySQL.';
     } else if (err.code === 'ER_ACCESS_DENIED_ERROR') {
-        message = 'Database credentials are invalid. Check DB_USER/DB_PASSWORD in backend/.env.';
+        message = 'Database credentials are invalid. Try using the "Service URI" from Aiven as the DATABASE_URL environment variable in Vercel.';
     } else if (err.code === 'ER_BAD_DB_ERROR') {
         message = 'Database not found. Create DB_NAME and import schema.sql.';
     } else if (err.code === 'ER_NO_SUCH_TABLE') {
