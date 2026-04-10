@@ -24,12 +24,8 @@ exports.processVoiceCommand = async (req, res, next) => {
         // 1. STT: Whisper Large V3 (using Buffer/Stream for serverless)
         console.log("Starting STT with whisper-large-v3...");
 
-        // Create a file-like object from the buffer
-        const audioFile = req.file.buffer;
-        audioFile.name = 'voice.webm'; // Required by some SDKs
-
         const transcription = await groq.audio.transcriptions.create({
-            file: audioFile,
+            file: await Groq.toFile(req.file.buffer, 'voice.webm'),
             model: "whisper-large-v3",
             response_format: "json"
         });
